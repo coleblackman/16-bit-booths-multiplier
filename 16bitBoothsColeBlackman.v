@@ -1,3 +1,83 @@
+module invert(output ib,input b);
+	assign ib = ~b;
+endmodule
+
+module and2 (input wire i0, i1, output wire o);
+  assign o = i0 & i1;
+endmodule
+
+module or2 (input wire i0, i1, output wire o);
+  assign o = i0 | i1;
+endmodule
+
+module xor2 (input wire i0, i1, output wire o);
+  assign o = i0 ^ i1;
+endmodule
+
+module nand2 (input wire i0, i1, output wire o);
+   wire t;
+   and2 and2_0 (i0, i1, t);
+   invert invert_0 (t, o);
+endmodule
+
+module nor2 (input wire i0, i1, output wire o);
+   wire t;
+   or2 or2_0 (i0, i1, t);
+   invert invert_0 (t, o);
+endmodule
+
+module xnor2 (input wire i0, i1, output wire o);
+   wire t;
+   xor2 xor2_0 (i0, i1, t);
+   invert invert_0 (t, o);
+endmodule
+
+module and3 (input wire i0, i1, i2, output wire o);
+   wire t;
+   and2 and2_0 (i0, i1, t);
+   and2 and2_1 (i2, t, o);
+endmodule
+
+module or3 (input wire i0, i1, i2, output wire o);
+   wire t;
+   or2 or2_0 (i0, i1, t);
+   or2 or2_1 (i2, t, o);
+endmodule
+
+module nor3 (input wire i0, i1, i2, output wire o);
+   wire t;
+   or2 or2_0 (i0, i1, t);
+   nor2 nor2_0 (i2, t, o);
+endmodule
+
+module nand3 (input wire i0, i1, i2, output wire o);
+   wire t;
+   and2 and2_0 (i0, i1, t);
+   nand2 nand2_1 (i2, t, o);
+endmodule
+
+module xor3 (input wire i0, i1, i2, output wire o);
+   wire t;
+   xor2 xor2_0 (i0, i1, t);
+   xor2 xor2_1 (i2, t, o);
+endmodule
+
+module xnor3 (input wire i0, i1, i2, output wire o);
+   wire t;
+   xor2 xor2_0 (i0, i1, t);
+   xnor2 xnor2_0 (i2, t, o);
+endmodule
+
+module fa (input wire i0, i1, cin, output wire sum, cout);
+   wire t0, t1, t2;
+   xor3 _i0 (i0, i1, cin, sum);
+   and2 _i1 (i0, i1, t0);
+   and2 _i2 (i1, cin, t1);
+   and2 _i3 (cin, i0, t2);
+   or3 _i4 (t0, t1, t2, cout);
+endmodule
+
+
 module Adder(a,b,sum);
 	input [15:0] a,b;
 	output [15:0]sum;
@@ -106,13 +186,11 @@ module booth_substep(input wire signed [15:0]a,Q,input wire signed q0,input wire
 	
 end	
 endmodule 
-
-
-
+	
 
 
  
-module boothmul(input signed[15:0]a,b,output signed [31:0] c);
+module mul16_signed(input signed[15:0]A,B,input clk,output signed [31:0] P);
 	wire signed [15:0]Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10,Q11,Q12,Q13,Q14,Q15;
 	wire signed [15:0] m;
 
@@ -120,6 +198,7 @@ module boothmul(input signed[15:0]a,b,output signed [31:0] c);
 	wire signed [15:0] A1,A0,A3,A2,A8,A9,A10,A11;
 	wire signed [15:0] A4,A5,A6,A7,A12,A13,A14,A15;
 	wire signed[15:0] q0;
+	wire signed[31:0] c;
 	wire qout;
 	//These need to be changed and added to
 	booth_substep step1(16'b0000000000000000,a,1'b0,b,A1,Q1,q0[1]);
@@ -139,5 +218,11 @@ module boothmul(input signed[15:0]a,b,output signed [31:0] c);
 	booth_substep step15(A14,Q14,q0[14],b,A15,Q15,q0[15]);
 	booth_substep step16(A15,Q15,q0[15],b,c[31:16],c[15:0],qout);
 	
+	always(@posedge clock)	P <= c;
+	
 	 
+endmodule
+
+module mul16_unsigned(input signed[15:0]A,B,input clk,output signed [31:0] P);
+	mul16_signed(A, B, clk, P);
 endmodule
