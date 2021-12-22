@@ -218,7 +218,7 @@ module mul16x16_signed(input signed[15:0]A,B,input clk,output signed [31:0] P);
 	booth_substep step15(A14,Q14,q0[14],b,A15,Q15,q0[15]);
 	booth_substep step16(A15,Q15,q0[15],b,c[31:16],c[15:0],qout);
 	
-	always(@posedge clock)	P <= c;
+	always@(posedge clock)	P <= c;
 	
 	 
 endmodule
