@@ -2,7 +2,7 @@ module tb;
 wire signed [31:0] z;
 reg signed [15:0] a,b;
 
-
+// EDit multib and delete CLK in order to succesfully run this testbench
 mul16x16_signed my_booth_16_signed(.A(a),.B(b),.c(z));
 
 initial begin $dumpfile("tb_boothsalgo.vcd"); $dumpvars(0,tb); end
