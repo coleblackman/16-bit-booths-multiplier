@@ -150,7 +150,8 @@ module booth_substep(input wire signed [15:0]a,Q,input wire signed q0,input wire
 	wire [15:0] addam,subam;
 	Adder myadd(a,m,addam);
 	subtractor mysub(a,m,subam);
-	// Still need to fix this part
+	
+	//First if- 0, 0 or 1, 1
 		always @(*) begin	
 		if(Q[0] == q0) begin
 			 cq0 = Q[0];
