@@ -190,7 +190,7 @@ endmodule
 
 
  
-module mul16x16_signed(input signed[15:0]A,B,output signed [31:0] c);
+module mul16x16_signed(input CLK, input signed[15:0]A,B, output signed [31:0] P);
 	wire signed [15:0]Q0,Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8,Q9,Q10,Q11,Q12,Q13,Q14,Q15;
 	wire signed [15:0] m;
 
@@ -217,9 +217,11 @@ module mul16x16_signed(input signed[15:0]A,B,output signed [31:0] c);
 	booth_substep step14(A13,Q13,q0[13],B,A14,Q14,q0[14]);
 	booth_substep step15(A14,Q14,q0[14],B,A15,Q15,q0[15]);
 	booth_substep step16(A15,Q15,q0[15],B,c[31:16],c[15:0],qout);
+	
+	always@(posedge CLK)	P <= c;
 
 endmodule
 
-module mul16_unsigned(input signed[15:0]A,B,output signed [31:0] P);
-	mul16x16_signed(A, B, c);
+module mul16_unsigned(input CLK, input signed[15:0]A,B,output signed [31:0] P);
+	mul16x16_signed(CLK, A, B, P);
 endmodule
